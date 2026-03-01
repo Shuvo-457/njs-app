@@ -2,32 +2,37 @@
 <html>
 <head>
 <title>NJS Earn App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+
 body{
-font-family:Arial;
-text-align:center;
-background:linear-gradient(to right,#4facfe,#00f2fe);
 margin:0;
-padding:0;
+font-family:Arial;
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+color:white;
+text-align:center;
 }
 
 .container{
-margin-top:80px;
+margin-top:60px;
 background:white;
-padding:30px;
+color:black;
+padding:25px;
 border-radius:15px;
-display:inline-block;
-box-shadow:0 0 20px rgba(0,0,0,0.2);
-width:300px;
+width:320px;
+margin-left:auto;
+margin-right:auto;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-h2{
-color:#333;
+.logo{
+width:120px;
+margin-bottom:15px;
 }
 
 .balance{
-font-size:22px;
-margin:15px 0;
+font-size:20px;
+margin:10px 0;
 }
 
 button{
@@ -35,33 +40,34 @@ padding:10px 20px;
 margin:5px;
 border:none;
 border-radius:8px;
-font-size:15px;
 cursor:pointer;
+font-size:14px;
 }
 
 .earn{background:#28a745;color:white;}
 .withdraw{background:#ffc107;color:black;}
-.adminbtn{background:#dc3545;color:white;}
+.admin{background:#dc3545;color:white;}
+.save{background:#007bff;color:white;}
 
 input{
 padding:8px;
-margin-top:10px;
+margin:5px;
 width:90%;
-border-radius:5px;
+border-radius:6px;
 border:1px solid #ccc;
 }
 
-#message{
-margin-top:10px;
-font-size:14px;
-}
+.hidden{display:none;}
+
 </style>
 </head>
-
 <body>
 
-<div class="container">
-<h2>NJS Earn App</h2>
+<div class="container" id="userPanel">
+
+<img src="NJS_logo.png" class="logo">
+
+<h3>User Dashboard</h3>
 
 <div class="balance">
 Balance: <span id="balance">0</span> Coins
@@ -70,52 +76,111 @@ Balance: <span id="balance">0</span> Coins
 <button class="earn" onclick="earn()">Watch Ad & Earn</button>
 <button class="withdraw" onclick="withdraw()">Withdraw</button>
 
-<div id="message"></div>
+<p id="message"></p>
 
 <hr>
 
-<h4>Admin Panel</h4>
+<button class="admin" onclick="showAdmin()">Admin Login</button>
+
+</div>
+
+<div class="container hidden" id="adminPanel">
+
+<h3>Admin Dashboard</h3>
+
 <input type="password" id="adminPass" placeholder="Admin Password">
+
 <br>
-<button class="adminbtn" onclick="adminReset()">Reset Balance</button>
+
+<h4>Set Percentage (Example: 5/3)</h4>
+<input type="text" id="percent" placeholder="5/3">
+<br>
+<button class="save" onclick="savePercent()">Save Percentage</button>
+
+<br><br>
+
+<button class="admin" onclick="resetAll()">Reset All Balance</button>
+<br>
+<button onclick="backUser()">Back</button>
+
+<p id="adminMsg"></p>
 
 </div>
 
 <script>
 
 let coins = localStorage.getItem("coins") || 0;
-coins = parseInt(coins);
-document.getElementById("balance").innerText = coins;
+let percent = localStorage.getItem("percent") || "5/3";
+
+coins=parseInt(coins);
+document.getElementById("balance").innerText=coins;
 
 function earn(){
-coins += 10;
+
+let parts=percent.split("/");
+let total=parseInt(parts[0]);
+let userShare=parseInt(parts[1]);
+
+let earnAmount = (10 * userShare) / total;
+
+coins += earnAmount;
+
 localStorage.setItem("coins",coins);
-document.getElementById("balance").innerText = coins;
-alert("Ad Watched 🎉 +10 Coins Added");
+document.getElementById("balance").innerText=coins;
+
+alert("Ad Watched 🎉 Coins Added");
 }
 
 function withdraw(){
-if(coins >= 100){
+
+if(coins>=100){
 document.getElementById("message").innerText="Withdraw Request Sent to Admin ✅";
-coins = 0;
+coins=0;
 localStorage.setItem("coins",coins);
 document.getElementById("balance").innerText=coins;
 }else{
 document.getElementById("message").innerText="Minimum 100 Coins Required ❌";
 }
+
 }
 
-function adminReset(){
+function showAdmin(){
+document.getElementById("userPanel").classList.add("hidden");
+document.getElementById("adminPanel").classList.remove("hidden");
+}
+
+function backUser(){
+document.getElementById("adminPanel").classList.add("hidden");
+document.getElementById("userPanel").classList.remove("hidden");
+}
+
+function savePercent(){
+
+let pass=document.getElementById("adminPass").value;
+
+if(pass==="njs123"){
+let newPercent=document.getElementById("percent").value;
+localStorage.setItem("percent",newPercent);
+document.getElementById("adminMsg").innerText="Percentage Updated ✅";
+}else{
+document.getElementById("adminMsg").innerText="Wrong Password ❌";
+}
+
+}
+
+function resetAll(){
+
 let pass=document.getElementById("adminPass").value;
 
 if(pass==="njs123"){
 coins=0;
 localStorage.setItem("coins",coins);
 document.getElementById("balance").innerText=coins;
-alert("Balance Reset Successful");
+document.getElementById("adminMsg").innerText="All Balance Reset ✅";
 }else{
-alert("Wrong Password");
+document.getElementById("adminMsg").innerText="Wrong Password ❌";
 }
+
 }
 
 </script>
