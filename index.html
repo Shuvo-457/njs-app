@@ -1,72 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>NJS Earn App</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      background: #f4f4f4;
-    }
-    .box {
-      margin-top: 50px;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      display: inline-block;
-      box-shadow: 0 0 10px #ccc;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 5px;
-      background: green;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .admin {
-      margin-top: 20px;
-    }
-  </style>
+<title>NJS Earn App</title>
+<style>
+body{
+font-family:Arial;
+text-align:center;
+background:linear-gradient(to right,#4facfe,#00f2fe);
+margin:0;
+padding:0;
+}
+
+.container{
+margin-top:80px;
+background:white;
+padding:30px;
+border-radius:15px;
+display:inline-block;
+box-shadow:0 0 20px rgba(0,0,0,0.2);
+width:300px;
+}
+
+h2{
+color:#333;
+}
+
+.balance{
+font-size:22px;
+margin:15px 0;
+}
+
+button{
+padding:10px 20px;
+margin:5px;
+border:none;
+border-radius:8px;
+font-size:15px;
+cursor:pointer;
+}
+
+.earn{background:#28a745;color:white;}
+.withdraw{background:#ffc107;color:black;}
+.adminbtn{background:#dc3545;color:white;}
+
+input{
+padding:8px;
+margin-top:10px;
+width:90%;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+#message{
+margin-top:10px;
+font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>NJS Earn App</h2>
-  <h3>Balance: <span id="balance">0</span> Coins</h3>
-  <button onclick="earn()">Earn Coins</button>
+<div class="container">
+<h2>NJS Earn App</h2>
 
-  <div class="admin">
-    <h4>Admin Panel</h4>
-    <input type="password" id="adminPass" placeholder="Enter Admin Password">
-    <button onclick="resetBalance()">Reset Balance</button>
-  </div>
+<div class="balance">
+Balance: <span id="balance">0</span> Coins
+</div>
+
+<button class="earn" onclick="earn()">Watch Ad & Earn</button>
+<button class="withdraw" onclick="withdraw()">Withdraw</button>
+
+<div id="message"></div>
+
+<hr>
+
+<h4>Admin Panel</h4>
+<input type="password" id="adminPass" placeholder="Admin Password">
+<br>
+<button class="adminbtn" onclick="adminReset()">Reset Balance</button>
+
 </div>
 
 <script>
-  let balance = localStorage.getItem("balance") || 0;
-  document.getElementById("balance").innerText = balance;
 
-  function earn() {
-    balance = parseInt(balance) + 10;
-    localStorage.setItem("balance", balance);
-    document.getElementById("balance").innerText = balance;
-  }
+let coins = localStorage.getItem("coins") || 0;
+coins = parseInt(coins);
+document.getElementById("balance").innerText = coins;
 
-  function resetBalance() {
-    let pass = document.getElementById("adminPass").value;
+function earn(){
+coins += 10;
+localStorage.setItem("coins",coins);
+document.getElementById("balance").innerText = coins;
+alert("Ad Watched 🎉 +10 Coins Added");
+}
 
-    if (pass === "njs123") {
-      balance = 0;
-      localStorage.setItem("balance", balance);
-      document.getElementById("balance").innerText = balance;
-      alert("Balance Reset Successful!");
-    } else {
-      alert("Wrong Password!");
-    }
-  }
+function withdraw(){
+if(coins >= 100){
+document.getElementById("message").innerText="Withdraw Request Sent to Admin ✅";
+coins = 0;
+localStorage.setItem("coins",coins);
+document.getElementById("balance").innerText=coins;
+}else{
+document.getElementById("message").innerText="Minimum 100 Coins Required ❌";
+}
+}
+
+function adminReset(){
+let pass=document.getElementById("adminPass").value;
+
+if(pass==="njs123"){
+coins=0;
+localStorage.setItem("coins",coins);
+document.getElementById("balance").innerText=coins;
+alert("Balance Reset Successful");
+}else{
+alert("Wrong Password");
+}
+}
+
 </script>
 
 </body>
